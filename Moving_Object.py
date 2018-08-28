@@ -79,7 +79,6 @@ while running_b:
     ball.x += delta_x
     ball.y += delta_y
 
-
     ''' Test if the ball and the paddle collide'''
     # #  Imaginary rectangles boxing the circle and paddle for collide detection
     # ball_rect = pygame.Rect(paddle_x, paddle_y, paddle_w, paddle_len)
@@ -109,7 +108,7 @@ while running_b:
         delta_y = - delta_y
 
     # redraw the whole thing
-    pygame.draw.circle(screen, circle_color, [ball.x, ball.y], ball.radius, cir_thick)
+    ball.display(screen, circle_color, cir_thick)
     pygame.draw.rect(screen, paddle_color, [paddle_x, paddle_y, paddle_w, paddle_len], 0)
 
     # refresh the screen

@@ -4,6 +4,7 @@ REMARKS:
 """
 
 import pygame
+from Ball import Ball
 import sys
 
 # start pygame library
@@ -21,11 +22,9 @@ screen.fill(scrn_colr)  # set the screen background to this color
 
 # set up circle shape:
 circle_color = [255, 0, 0]
-radius = 15
-cir_thick = 0 # pixels
-ball_x = 300
-ball_y = 200
-pygame.draw.circle(screen, circle_color, [ball_x, ball_y], radius, cir_thick)
+cir_thick = 0  # pixels
+ball = Ball([300, 200], 15)
+
 
 # set up the paddle:
 paddle_x = wth - 200
@@ -77,8 +76,8 @@ while running_b:
     screen.fill(scrn_colr)  # set the screen background to this color
 
     # Update the ball's position
-    ball_x += delta_x
-    ball_y += delta_y
+    ball.x += delta_x
+    ball.y += delta_y
 
 
     ''' Test if the ball and the paddle collide'''
@@ -87,30 +86,30 @@ while running_b:
     # paddle_rect = pygame.Rect(ball_x - radius, ball_y - radius, radius * 2, radius * 2)
     paddle_center_x = paddle_x + paddle_w / 2
     paddle_center_y = paddle_y + paddle_len / 2
-    distance_x = abs(paddle_center_x - ball_x)
-    distance_y = abs(paddle_center_y - ball_y)
+    distance_x = abs(paddle_center_x - ball.x)
+    distance_y = abs(paddle_center_y - ball.y)
 
-    if distance_x <= paddle_w / 2 + radius and distance_y <= paddle_len / 2 + radius:
+    if distance_x <= paddle_w / 2 + ball.radius and distance_y <= paddle_len / 2 + ball.radius:
         # if paddle_y > ball_y:  # the ball is above the paddle
             delta_y = - delta_y
 
     # check if the ball is off the screen
-    if ball_x + radius + cir_thick >= screen.get_width():  # reach the right wall
-        ball_x = screen.get_width() - cir_thick - radius
+    if ball.x + ball.radius + cir_thick >= screen.get_width():  # reach the right wall
+        ball.x = screen.get_width() - cir_thick - ball.radius
         delta_x = - delta_x
-    elif ball_x - radius - cir_thick <= 0:  # reach the left wall
-        ball_x = radius + cir_thick
+    elif ball.x - ball.radius - cir_thick <= 0:  # reach the left wall
+        ball.x = ball.radius + cir_thick
         delta_x = - delta_x
 
-    if ball_y + radius + cir_thick >= screen.get_height():  # reach the bottom
-        ball_y = screen.get_height() - radius - cir_thick
+    if ball.y + ball.radius + cir_thick >= screen.get_height():  # reach the bottom
+        ball.y = screen.get_height() - ball.radius - cir_thick
         delta_y = - delta_y
-    elif ball_y - radius - cir_thick <= 0:  # reach the top
-        ball_y = radius + cir_thick
+    elif ball.y - ball.radius - cir_thick <= 0:  # reach the top
+        ball.y = ball.radius + cir_thick
         delta_y = - delta_y
 
     # redraw the whole thing
-    pygame.draw.circle(screen, circle_color, [ball_x, ball_y], radius, cir_thick)
+    pygame.draw.circle(screen, circle_color, [ball.x, ball.y], ball.radius, cir_thick)
     pygame.draw.rect(screen, paddle_color, [paddle_x, paddle_y, paddle_w, paddle_len], 0)
 
     # refresh the screen

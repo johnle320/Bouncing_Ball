@@ -4,8 +4,9 @@ REMARKS:
 """
 
 import pygame
-from Ball import Ball
-import sys
+
+from Model.Ball import Ball
+from Model.Rect import Rect
 
 # start pygame library
 pygame.init()
@@ -21,8 +22,6 @@ screen.fill(scrn_colr)  # set the screen background to this color
 
 
 # set up circle shape:
-circle_color = [255, 0, 0]
-cir_thick = 0  # pixels
 ball = Ball([300, 200], 15)
 
 
@@ -108,7 +107,10 @@ while running_b:
         delta_y = - delta_y
 
     # redraw the whole thing
+    circle_color = [255, 0, 0]
+    cir_thick = 0  # pixels
     ball.display(screen, circle_color, cir_thick)
+
     pygame.draw.rect(screen, paddle_color, [paddle_x, paddle_y, paddle_w, paddle_len], 0)
 
     # refresh the screen

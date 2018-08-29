@@ -6,7 +6,7 @@ REMARKS:
 import pygame
 
 from Model.Ball import Ball
-from Model.Rect import Rect
+from Model.Paddle import Paddle
 
 # start pygame library
 pygame.init()
@@ -21,16 +21,23 @@ screen = pygame.display.set_mode([wth, hght])  # set screen size
 screen.fill(scrn_colr)  # set the screen background to this color
 
 
-# set up circle shape:
-ball = Ball([300, 200], 15)
+# set up the ball:
+circle_color = [255, 0, 0]
+cir_thick = 0  # pixels
+ball_x = 300
+ball_y = 200
+radius = 15
+ball = Ball([ball_x, ball_y], radius)
 
 
 # set up the paddle:
 paddle_x = wth - 200
 paddle_y = hght - 80
-paddle_color = [0, 255, 0]
 paddle_w = 160
 paddle_len = 40
+paddle_color = [0, 255, 0]
+paddle_thick = 0
+paddle = Paddle(paddle_x, paddle_y, paddle_w, paddle_len)
 
 # display the screen
 pygame.display.flip()
@@ -62,14 +69,14 @@ while running_b:
             [mouse_x, mouse_y] = pygame.mouse.get_pos()  # give mouse coordinate
 
             # stop the paddle from following the mouse when the mouse is outside of the window
-            if mouse_x >= wth - paddle_w / 2:
-                paddle_x = wth - paddle_w
-            elif mouse_x <= paddle_w / 2:
-                paddle_x = 0
+            if mouse_x >= wth - paddle.width / 2:
+                paddle.x = wth - paddle.width
+            elif mouse_x <= paddle.width / 2:
+                paddle.x = 0
             else:  # while the mouse is inside the window
                 # move the x_coordinate
                 # te of the paddle to that of the mouse
-                paddle_x = mouse_x - (paddle_w / 2)
+                paddle.x = mouse_x - (paddle.width / 2)
 
     # Erase the whole screen:
     screen.fill(scrn_colr)  # set the screen background to this color
@@ -79,17 +86,30 @@ while running_b:
     ball.y += delta_y
 
     ''' Test if the ball and the paddle collide'''
-    # #  Imaginary rectangles boxing the circle and paddle for collide detection
-    # ball_rect = pygame.Rect(paddle_x, paddle_y, paddle_w, paddle_len)
-    # paddle_rect = pygame.Rect(ball_x - radius, ball_y - radius, radius * 2, radius * 2)
-    paddle_center_x = paddle_x + paddle_w / 2
-    paddle_center_y = paddle_y + paddle_len / 2
-    distance_x = abs(paddle_center_x - ball.x)
-    distance_y = abs(paddle_center_y - ball.y)
+    # WAY1:
+    paddle.center_x = paddle.x + paddle.width / 2
+    paddle.center_y = paddle.y + paddle.length / 2
+    distance_x = abs(paddle.center_x - ball.x)
+    distance_y = abs(paddle.center_y - ball.y)
 
-    if distance_x <= paddle_w / 2 + ball.radius and distance_y <= paddle_len / 2 + ball.radius:
+    # WAY3: DOES NOT WORK
+    '''paddle's attributes: center_x and center_y depend on x and y. But x and y are constantly changed,
+    but center_x and center_y are not updated accordingly.
+
+    paddle.center_x = paddle.x + paddle.width / 2
+    paddle.center_y = paddle.y + paddle.length / 2
+    distance_x = abs(paddle.center_x - ball.x)
+    distance_y = abs(paddle.center_y - ball.y)
+    '''
+
+    # WAY2:
+    # distance_x = abs(paddle.center_x - ball.x)
+    # distance_y = abs(paddle.center_y - ball.y)
+
+    if distance_x <= paddle.width / 2 + ball.radius and distance_y <= paddle.length / 2 + ball.radius:
         # if paddle_y > ball_y:  # the ball is above the paddle
-            delta_y = - delta_y
+        print("ball and paddle collided")
+        delta_y = - delta_y
 
     # check if the ball is off the screen
     if ball.x + ball.radius + cir_thick >= screen.get_width():  # reach the right wall
@@ -107,11 +127,9 @@ while running_b:
         delta_y = - delta_y
 
     # redraw the whole thing
-    circle_color = [255, 0, 0]
-    cir_thick = 0  # pixels
-    ball.display(screen, circle_color, cir_thick)
 
-    pygame.draw.rect(screen, paddle_color, [paddle_x, paddle_y, paddle_w, paddle_len], 0)
+    ball.display(screen, circle_color, cir_thick)
+    paddle.display(screen, paddle_color, paddle_thick)
 
     # refresh the screen
     pygame.display.update()

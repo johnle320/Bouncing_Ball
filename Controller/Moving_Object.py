@@ -67,7 +67,7 @@ while running_b:
              Therefore we should add: pygame.quit()"""
 
         if ea_event.type == pygame.MOUSEMOTION:
-            mouse_paddle_adjustment(paddle)
+            mouse_paddle_adjustment(screen, paddle)
 
     # Erase the whole screen:
     screen.fill(scrn_colr)  # set the screen background to this color
